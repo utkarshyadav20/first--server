@@ -17,7 +17,7 @@
 
 
 
-
+  //Software similar to thunder client imp{insomnia,postman}
 
 
 
@@ -43,23 +43,51 @@ http.createServer((request,response)=>{
           response.end(); 
       }
       else if(method==="POST"){
-        response.writeHead(200);
-        response.end();
+        let content="";
+        request
+            .on("error",(err)=>{
+              console.err(err);
+            })
+            .on("data",(chunk)=>{
+                  content+=chunk;
+                  // console.log(chunk);     //Coneverted to buffer for faster transportation across network
+            })
+            .on("end",()=>{
+              // console.log(content);    //Printing the data as it is
+              content=JSON.parse(content);
+              // console.log("DATA: ",content);   //Converting the data to JSON fromat
+              let newTodo=todo;
+              newTodo.push(content.Task);
+              console.log(newTodo);
+              response.writeHead(201);
+              
+            });
+            
+            response.writeHead(200);
+            response.end();
+          }
+      else if(method==="DELETE"){
+        
         let content="";
         request
         .on("error",(err)=>{
-           console.err(err);
+           console.log(err)
         })
         .on("data",(chunk)=>{
-               content+=chunk;
-               console.log(chunk);     //Coneverted to buffer for faster transportation across network
+          content+=chunk;
         })
         .on("end",()=>{
-          console.log(content);
-           content=JSON.parse(content);
-           console.log("DATA: ",content);
-        });
-        
+          content=JSON.parse(content);
+          let deleteThis=content.item;
+          for(let i=0;i<todo.length;i++){
+             if(todo[i]===deleteThis){
+              todo.splice(i,1);
+              break;
+             }
+          }
+          response.writeHead(204);
+          response.end();
+        })
       }
       else{
         response.writeHead(501);
