@@ -37,8 +37,8 @@ app.delete("/todo",(req,res)=>{
     }
   })
     
-  res.status(201).send({
-    message:"Deleted successfully"
+  res.status(200).send({
+    message:`Deleted item ${deleteThis}`
   });
    
 })
