@@ -1,14 +1,56 @@
-const http=require("http");
+const express=require('express');
+const app=express(); //initializing for  using express methods
 
-const port=8081;
+app.use(express.json());
 
-http.createServer((request,response)=>{ 
-     response.writeHead(200,{"Content-Type":"html"});
-     response.write("<h1>This is my first server</h1>"); 
-     response.end();   
+
+const port=8081;     //making a local port
+const todo=["Water plants","do dsa","Do web dev"];
+app.get("/",(req,res)=>{
+  res.status(200).send (`<h1>first server expresss</h1>`);
 })
-.listen(port,()=>{ // callback function
-     console.log(`Started the server on port no ${port}`);
+app.get("/todo",(req,res)=>{
+    //callback
+  res.status(200).send(`<h1>${todo}</h1>`);
+  //  res.send('Utkarsh');
+});
+app.post("/todo",(req,res)=>{
+  newTodo=req.body.item;     //body varible is automayically created and mapped to the JSON object containing item{advt of express}
+  todo.push(newTodo);
+  res.status(200).send({
+    message:"Task added succesfully"  //printing a json object 
+  });
+
+});
+app.delete("/todo",(req,res)=>{
+  deleteThis=req.body.item;
+
+  // for(let i=0;i<todo.length;i++){
+  //   if(todo[i]==deleteThis){
+  //     todo.splice(i,1);
+  //   }
+  // }
+
+  todo.filter((element,index)=>{       //can also use find
+    if(element===deleteThis){
+      todo.splice(index,1);
+    }
+    
+  })
+  res.status(200).send({
+    message:`Deleted item ${deleteThis}`
+  });
+  
+   
 });
 
-// http://localhost:8081  
+app.all("/todo",(req,res)=>{
+    res.status(501).send();
+
+});
+app.all("*",(req,res)=>{
+    res.status(404).send();
+})
+app.listen(port,()=>{
+  console.log(`Server started on port ${port}`);
+});
