@@ -35,12 +35,21 @@ app.delete("/todo",(req,res)=>{
     if(element===deleteThis){
       todo.splice(index,1);
     }
-  })
     
+  })
   res.status(200).send({
     message:`Deleted item ${deleteThis}`
   });
+  
    
+});
+
+app.all("/todo",(req,res)=>{
+    res.status(501).send();
+
+});
+app.all("*",(req,res)=>{
+    res.status(404).send();
 })
 app.listen(port,()=>{
   console.log(`Server started on port ${port}`);
